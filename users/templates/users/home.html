@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <script>
+        // JavaScript function to navigate to a URL
+        function navigateTo(url) {
+            window.location.href = url;
+        }
+    </script>
+</head>
+<body>
+    <h1>Welcome to the Attendance Management System</h1>
+    <p>Hello, {{ user.username }}! You are logged in.</p>
+
+    <nav>
+        <ul>
+            <li>
+                <button onclick="navigateTo('{% url 'users:logout' %}')">Logout</button>
+            </li>
+            <li>
+                <button onclick="navigateTo('{% url 'attendance:generate_code' %}')">
+                    Create New Attendance
+                </button>
+            </li>
+            <li>
+                <button onclick="navigateTo('{% url 'attendance:mark_attendance' %}')">
+                    Mark My Attendance
+                </button>
+            </li>
+        </ul>
+    </nav>
+</body>
+</html>

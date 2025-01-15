@@ -1,0 +1,33 @@
+<form id="mark-attendance-form" method="POST" action="{% url 'attendance:mark_attendance' %}">
+    {% csrf_token %}
+    <input type="text" name="code" id="code-input" placeholder="Enter Attendance Code">
+    <button type="submit">Mark Attendance</button>
+</form>
+
+<script>
+    document.getElementById("mark-attendance-form").addEventListener("submit", async function (event) {
+        event.preventDefault();  // Prevent the default form submission
+
+        const code = document.getElementById("code-input").value;
+        
+        // Create FormData object to send the form data as POST
+        const formData = new FormData();
+        formData.append('code', code);
+
+        // Send the POST request using fetch
+        const response = await fetch("{% url 'attendance:mark_attendance' %}", {
+            method: "POST",
+            body: formData,  // Sending the data as FormData
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+        });
+
+        const data = await response.json();
+        if (data.status === "success") {
+            alert("Attendance marked successfully!");
+        } else {
+            alert(data.error || "Failed to mark attendance.");
+        }
+    });
+</script>
