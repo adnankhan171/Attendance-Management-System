@@ -24,11 +24,11 @@ def generate_code(request):
         
         # Refresh the latest_code after creating a new one
         latest_code = AttendanceCode.objects.filter(created_by=request.user).order_by('-created_at').first()
-
+        expiry_timestamp = int(expiry_time.timestamp())
         # Return the code and expiry time
         return JsonResponse({
             "code": code,
-            "expiry_time": expiry_time.strftime("%Y-%m-%d %H:%M:%S")
+            "expiry_time": expiry_timestamp
         })
 
     # Render template for GET requests
