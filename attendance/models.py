@@ -26,3 +26,30 @@ class AttendanceRecord(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.attendance_code.code}"
+
+class AttendanceSheet(models.Model):
+    id = models.AutoField(primary_key=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_sheets")
+    created_at = models.DateTimeField(default=now)
+    students_marked = models.ManyToManyField(User, related_name="marked_sheets", blank=True)
+
+    def __str__(self):
+        return f"sheet by {self.created_by.username} on {self.created_at}"
+    
+
+class MarkedAttendanceModel(models.Model):
+    id = models.AutoField(primary_key=True)
+    attendance_sheet = models.ForeignKey(
+        AttendanceSheet, on_delete=models.CASCADE, related_name="marked_attendances"
+    )
+    marked_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="marked_records")
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name="student_attendances")
+    timestamp = models.DateTimeField(default=now)
+    status  = models.BooleanField(default=True)
+
+    def save(self, *args,**kwargs):
+        super().save(*args, **kwargs)
+        self.attendance_sheet.students_marked.add(self.student)
+
+    def __str__(self):
+        return f"{self.student.username} - {self.status} - {self.marked_by.username}"

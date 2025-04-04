@@ -1,8 +1,96 @@
-<form id="mark-attendance-form" method="POST" action="{% url 'attendance:mark_attendance' %}">
+<form id="mark-attendance-form" method="POST" action="{% url 'attendance:mark_attendance' %}" class="attendance-form">
     {% csrf_token %}
-    <input type="text" name="code" id="code-input" placeholder="Enter Attendance Code">
-    <button type="submit">Mark Attendance</button>
+    <div class="form-group">
+        <input type="text" name="code" id="code-input" placeholder="Enter Attendance Code" class="form-input">
+    </div>
+    <button type="submit" class="submit-button">Mark Attendance</button>
 </form>
+
+<style>
+    /* Consistent Theme Variables */
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3a0ca3;
+        --accent-color: #4cc9f0;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+        --success-color: #4bb543;
+        --error-color: #d9534f;
+        --text-color: #2b2d42;
+        --text-light: #8d99ae;
+        --border-radius: 8px;
+        --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+
+    .attendance-form {
+        max-width: 500px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid #e0e0e0;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+    }
+
+    .submit-button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        width: 100%;
+    }
+
+    .submit-button:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .attendance-form {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+    }
+</style>
 
 <script>
     document.getElementById("mark-attendance-form").addEventListener("submit", async function (event) {
@@ -14,20 +102,33 @@
         const formData = new FormData();
         formData.append('code', code);
 
-        // Send the POST request using fetch
-        const response = await fetch("{% url 'attendance:mark_attendance' %}", {
-            method: "POST",
-            body: formData,  // Sending the data as FormData
-            headers: {
-                "X-CSRFToken": "{{ csrf_token }}",
-            },
-        });
+        // Disable button during submission
+        const submitButton = document.querySelector('.submit-button');
+        submitButton.disabled = true;
+        submitButton.textContent = "Processing...";
 
-        const data = await response.json();
-        if (data.status === "success") {
-            alert("Attendance marked successfully!");
-        } else {
-            alert(data.error || "Failed to mark attendance.");
+        try {
+            // Send the POST request using fetch
+            const response = await fetch("{% url 'attendance:mark_attendance' %}", {
+                method: "POST",
+                body: formData,  // Sending the data as FormData
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+            });
+
+            const data = await response.json();
+            if (data.status === "success") {
+                alert("Attendance marked successfully!");
+                document.getElementById("code-input").value = ""; // Clear input
+            } else {
+                alert(data.error || "Failed to mark attendance.");
+            }
+        } catch (error) {
+            alert("Network error occurred. Please try again.");
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = "Mark Attendance";
         }
     });
 </script>

@@ -3,7 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
+    <title>Home Page | Attendance Management</title>
+    <style>
+        /* Consistent Theme Variables */
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #4cc9f0;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --text-color: #2b2d42;
+            --text-light: #8d99ae;
+            --border-radius: 8px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        h1 {
+            color: var(--secondary-color);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+        }
+
+        p.welcome-message {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        nav {
+            margin-top: 2rem;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 0;
+        }
+
+        nav li {
+            min-width: 250px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        /* Logout button different style */
+        nav ul li:first-child button {
+            background-color: #f8f9fa;
+            color: var(--error-color);
+            border: 2px solid var(--error-color);
+        }
+
+        nav ul li:first-child button:hover {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            p.welcome-message {
+                font-size: 1rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            nav li {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
     <script>
         // JavaScript function to navigate to a URL
         function navigateTo(url) {
@@ -12,25 +149,27 @@
     </script>
 </head>
 <body>
-    <h1>Welcome to the Attendance Management System</h1>
-    <p>Hello, {{ user.username }}! You are logged in.</p>
+    <div class="container">
+        <h1>Welcome to the Attendance Management System</h1>
+        <p class="welcome-message">Hello, {{ user.username }}! You are logged in.</p>
 
-    <nav>
-        <ul>
-            <li>
-                <button onclick="navigateTo('{% url 'users:logout' %}')">Logout</button>
-            </li>
-            <li>
-                <button onclick="navigateTo('{% url 'attendance:generate_code' %}')">
-                    Create New Attendance
-                </button>
-            </li>
-            <li>
-                <button onclick="navigateTo('{% url 'attendance:mark_attendance' %}')">
-                    Mark My Attendance
-                </button>
-            </li>
-        </ul>
-    </nav>
+        <nav>
+            <ul>
+                <li>
+                    <button onclick="navigateTo('{% url 'users:logout' %}')">Logout</button>
+                </li>
+                <li>
+                    <button onclick="navigateTo('{% url 'attendance:generate_code' %}')">
+                        Create New Attendance
+                    </button>
+                </li>
+                <li>
+                    <button onclick="navigateTo('{% url 'attendance:mark_attendance' %}')">
+                        Mark My Attendance
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </body>
 </html>

@@ -1,9 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
-from .models import AttendanceCode, AttendanceRecord
+from .models import AttendanceCode, AttendanceRecord, AttendanceSheet, MarkedAttendanceModel
 from django.contrib.auth.decorators import login_required
 import random
-
 from django.utils.timezone import now, timedelta
 
 @login_required
@@ -55,8 +54,10 @@ def mark_attendance(request):
 @login_required
 def attendance_list(request, code):
     # Fetch the AttendanceCode object created by the logged-in user with the given code
-    attendance_code = get_object_or_404(AttendanceCode, code=code, created_by=request.user)
+    # 
+    attendance_code = AttendanceCode.objects.filter(created_by=request.user).order_by('-created_at').first()
     
+    print(f"Fetching attendance list for code: {attendance_code.code}, Created at: {attendance_code.created_at}")
     # Fetch the related attendance records using the correct related_name
     attendance_records = attendance_code.attendance_records.all()
 
@@ -65,3 +66,13 @@ def attendance_list(request, code):
         'attendance_code': attendance_code,
         'attendance_records': attendance_records,
     })
+
+@login_required
+def attendance_sheets_created(request):
+    sheets = AttendanceSheet.objects.filter(created_by=request.user)
+    return render(request, "attendance/created_sheets.html", {"sheets":sheets})
+
+@login_required
+def attendance_marked_by_user(request):
+    marked_attendance = MarkedAttendanceModel.objects.filter(marked_by=request.user)
+    return render(request, "attendance/marked_attendances_history.html", {"marked_attendance": marked_attendance})
