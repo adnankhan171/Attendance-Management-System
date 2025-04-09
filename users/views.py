@@ -10,7 +10,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  # Automatically log the user in after registration
-            return redirect('home')  # Redirect to the home page or another page
+            return redirect('users:login')  # Redirect to the home page or another page
     else:
         form = RegisterForm()
     return render(request, 'users/register.html', {'form': form})
